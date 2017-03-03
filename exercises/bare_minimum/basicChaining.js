@@ -10,11 +10,29 @@
 
 var fs = require('fs');
 var Promise = require('bluebird');
+var https = require('https');
 
 
 
 var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
   // TODO
+  // read readFilePath to get Github usedname
+  fs.readFile(readFilePath, function (err, data) {
+    if (err) {
+      throw err;
+    } else {
+      var username = data.toString().split('\n')[0];
+      console.log(username);
+      // https.get('https://api.github.com/users/' + username, function(response){
+      //   response.on('data', function(data){
+      //     fs.writeFile(writeFilePath, data, function(err){
+      //       if(err) throw err;
+      //       console.log('Its saved!');
+      //     });
+      //   });
+      // })
+    }
+  });
 };
 
 // Export these functions so we can test them

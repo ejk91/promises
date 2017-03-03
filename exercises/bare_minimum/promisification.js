@@ -3,6 +3,39 @@
  * Promisify them if you can, otherwise roll your own promise returning function
  */ 
 
+ // making the previous functions to promises
+
+ // var nodeStyle = require('./callbackReview.js');
+ // var pluckFirstLineFromFileAsync = Promise.promisify(nodeStyle.pluckFirstLineFromFile)
+
+ // so what does this look like undeneath the hood?
+ // var pluckFirstLineFromFileAsync = function(filePath) {
+ //  return new Promise (function(resolve, reject) {
+ //    nodeStyle.pluckFirstLineFromFile(filePath, function( err, firstLine) {
+ //      if (err) {
+ //        reject(err)
+ //      } else {
+ //        resolve(firstLine)
+ //      }
+ //    })
+ //  });
+ // }
+
+ // var getStatusCodeAsync = Promise.promisify(nodeStyle.getStatusCode)
+
+ // var getStatusCodeAsync = function (url) {
+ //  return new Promise(function (resolve, reject) {
+ //    nodeStyle.getStatusCode( url, function (err, statusCode) {
+ //      if (err) {
+ //        reject(err)
+ //      } else {
+ //        resolve(statusCode)
+ //      }
+ //    }
+ //  })
+ // }
+
+
 var fs = require('fs');
 var request = require('request');
 var crypto = require('crypto');
@@ -27,7 +60,7 @@ var getGitHubProfile = function(user, callback) {
   });
 };
 
-var getGitHubProfileAsync; // TODO
+var getGitHubProfileAsync = Promise.promisify(getGitHubProfile);
 
 
 // (2) Asyncronous token generation
@@ -38,13 +71,13 @@ var generateRandomToken = function(callback) {
   });
 };
 
-var generateRandomTokenAsync; // TODO
+var generateRandomTokenAsync = Promise.promisify(generateRandomToken);
 
 
 // (3) Asyncronous file manipulation
 var readFileAndMakeItFunny = function(filePath, callback) {
   fs.readFile(filePath, 'utf8', function(err, file) {
-    if (err) { return callback(err); }
+    if (err) { return callback(err, null); }
    
     var funnyFile = file.split('\n')
       .map(function(line) {
@@ -52,11 +85,11 @@ var readFileAndMakeItFunny = function(filePath, callback) {
       })
       .join('\n');
 
-    callback(funnyFile);
+    callback(null, funnyFile);
   });
 };
 
-var readFileAndMakeItFunnyAsync; // TODO
+var readFileAndMakeItFunnyAsync = Promise.promisify(readFileAndMakeItFunny);
 
 // Export these functions so we can test them and reuse them in later exercises
 module.exports = {
